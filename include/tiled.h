@@ -57,6 +57,7 @@ struct TiledTileMapLayerTile
     uint32_t id;
     bool flippedHorizontally;
     bool flippedVertically;
+    bool flippedDiagonally;
 };
 
 struct TiledTileMapLayer
@@ -71,7 +72,7 @@ struct TiledTileSheet
 {
     std::string image;
     uint32_t id, columns, rows, tileWidth, tileHeight, imageWidth, imageHeight;
-    std::map<uint32_t, TiledTileSheetTile> tiles;
+    std::unordered_map<uint32_t, TiledTileSheetTile> tiles;
     static void fromJson(const std::string path, TiledTileSheet& p);
 };
 

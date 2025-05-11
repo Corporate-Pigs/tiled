@@ -5,6 +5,8 @@ static constexpr unsigned FLIPPED_VERTICALLY_FLAG = 0x40000000;
 static constexpr unsigned FLIPPED_DIAGONALLY_FLAG = 0x20000000;
 static constexpr unsigned ROTATED_HEXAGONAL_120_FLAG = 0x10000000;
 
+extern std::string tiledResourcesPath;
+
 void from_json(const nlohmann::json& j, TiledTileSheetTileObjectGroup& p) { j.at("objects").get_to(p.objects); }
 
 void from_json(const nlohmann::json& j, TiledTileSheetTileObject& p)
@@ -109,10 +111,9 @@ void from_json(const nlohmann::json& j, TiledTileMapLayerTile& p)
     uint32_t globalTileId = j;
     p.flippedHorizontally = (globalTileId & FLIPPED_HORIZONTALLY_FLAG);
     p.flippedVertically = (globalTileId & FLIPPED_VERTICALLY_FLAG);
+    p.flippedDiagonally = (globalTileId & FLIPPED_DIAGONALLY_FLAG);
 
-    // TODO: Improve performance by using diagonally
-    //  bool flippedDiagonally = (globalTileId & FLIPPED_DIAGONALLY_FLAG);
-    //  bool rotatedHex120 = (globalTileId & ROTATED_HEXAGONAL_120_FLAG);
+    //bool rotatedHex120 = (globalTileId & ROTATED_HEXAGONAL_120_FLAG);
     
     // Clear all four flags
     globalTileId &=
@@ -124,7 +125,7 @@ void from_json(const nlohmann::json& j, TiledTileMapTileSet& p)
 {
     std::string source;
     j.at("source").get_to(source);
-    TiledTileSheet::fromJson(source, p.sheet);
+    TiledTileSheet::fromJson(tiledResourcesPath + source, p.sheet);
 
     j.at("firstgid").get_to(p.firstId);
 }
