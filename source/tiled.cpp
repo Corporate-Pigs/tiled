@@ -26,7 +26,7 @@ void from_json(const nlohmann::json& j, TiledTileSheetTileAnimationFrame& p)
     j.at("tileid").get_to(p.tileId);
 }
 
-void from_json(const nlohmann::json& j, TiledTileSheetTileProperty& p)
+void from_json(const nlohmann::json& j, TiledProperty& p)
 {
     j.at("name").get_to(p.name);
     auto value = j.at("value");
@@ -90,6 +90,12 @@ void from_json(const nlohmann::json& j, TiledTileMapLayerObject& p)
     j.at("id").get_to(p.id);
     j.at("x").get_to(p.x);
     j.at("y").get_to(p.y);
+    j.at("name").get_to(p.name);
+    j.at("type").get_to(p.type);
+    if (j.contains("properties"))
+    {
+        j.at("properties").get_to(p.properties);
+    }
 }
 
 void from_json(const nlohmann::json& j, TiledTileMapLayer& p)
@@ -104,6 +110,10 @@ void from_json(const nlohmann::json& j, TiledTileMapLayer& p)
     {
         j.at("data").get_to(p.data);
     }
+    if (j.contains("layers"))
+    {
+        j.at("layers").get_to(p.layers);
+    }
 }
 
 void from_json(const nlohmann::json& j, TiledTileMapLayerTile& p)
@@ -113,8 +123,8 @@ void from_json(const nlohmann::json& j, TiledTileMapLayerTile& p)
     p.flippedVertically = (globalTileId & FLIPPED_VERTICALLY_FLAG);
     p.flippedDiagonally = (globalTileId & FLIPPED_DIAGONALLY_FLAG);
 
-    //bool rotatedHex120 = (globalTileId & ROTATED_HEXAGONAL_120_FLAG);
-    
+    // bool rotatedHex120 = (globalTileId & ROTATED_HEXAGONAL_120_FLAG);
+
     // Clear all four flags
     globalTileId &=
         ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG | ROTATED_HEXAGONAL_120_FLAG);
@@ -140,7 +150,7 @@ void from_json(const nlohmann::json& j, TiledTileMap& p)
     j.at("layers").get_to(p.layers);
 }
 
-const TiledTileMapTileSet* TiledTileMap::getTileSetPtrForTileId(uint32_t tileId)
+const TiledTileMapTileSet* TiledTileMap::getTileSetPtrForTileId(uint32_t tileId) const
 {
     for (int32_t i = tileSets.size() - 1; i > -1; i--)
     {
